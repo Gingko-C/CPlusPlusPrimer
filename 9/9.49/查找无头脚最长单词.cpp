@@ -1,4 +1,5 @@
 #include <string>
+#include <algorithm>
 using std::string;
 #include <list>
 using std::list;
@@ -67,6 +68,37 @@ string findLongestNoHeadOrFoot(std::istream& is) {
 		}
 	}
 	return longestWithoutHF;
+}
+
+string findLongestNoHeadOrFootMinGW(std::istream& is) {
+    string letterWithHF = "bdfghijklpqty";
+    string word;
+    is >> word;
+    int pos = 0;
+    vector<int> vecpos;
+    while((pos = word.find_first_not_of(letterWithHF, pos)) != string::npos){
+        vecpos.push_back(pos);
+        pos++;
+    }
+
+    vector<pair<int, int>> lenIndex;
+    int len = 0;
+    for (int i = 0; i < vecpos.size() - 1; i++) {
+        if(vecpos[i] + 1 == vecpos[i + 1]){
+            len += 1;
+            lenIndex.push_back(make_pair(len, vecpos[i]));
+            if(i == vecpos.size() - 2){
+                len += 1;
+                lenIndex.push_back(make_pair(len, vecpos[i + 1]));
+            }
+        }else{
+            len = 0;
+        }
+    }
+
+    sort(lenIndex.begin(), lenIndex.end());
+    len = lenIndex[lenIndex.size() - 1].first;
+    return word.substr(lenIndex[lenIndex.size() - 1].second - len + 1, len);
 }
 
 int main() {
